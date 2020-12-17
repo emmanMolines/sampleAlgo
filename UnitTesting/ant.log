@@ -1,0 +1,17 @@
+
+download-ivy:
+    [mkdir] Created dir: C:\Users\emman\eclipse-workspace\Tired\ivy
+     [echo] installing ivy...
+      [get] Getting: http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar
+      [get] To: C:\Users\emman\eclipse-workspace\Tired\ivy\ivy.jar
+      [get] Error opening connection java.io.IOException: Server returned HTTP response code: 501 for URL: http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar
+      [get] Error opening connection java.io.IOException: Server returned HTTP response code: 501 for URL: http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar
+      [get] Error opening connection java.io.IOException: Server returned HTTP response code: 501 for URL: http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar
+      [get] Can't get http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar to C:\Users\emman\eclipse-workspace\Tired\ivy\ivy.jar
+
+BUILD FAILED
+
+C:\Users\emman\eclipse-workspace\Tired\build.xml:32: Can't get http://repo1.maven.org/maven2/org/apache/ivy/ivy/2.3.0/ivy-2.3.0.jar to C:\Users\emman\eclipse-workspace\Tired\ivy\ivy.jar
+	at org.apache.tools.ant.taskdefs.Get$GetThread.downloadFile(Get.java:843)
+	at org.apache.tools.ant.taskdefs.Get$GetThread.get(Get.java:682)
+	at org.apache.tools.ant.taskdefs.Get$GetThread.run(Get.java:666)
