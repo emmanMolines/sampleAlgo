@@ -1,0 +1,7 @@
+Testsuite: CoverageTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 sec
+
+Testcase: addTest took 0.016 sec
+Testcase: greaterThanTest took 0 sec
+Testcase: subtractTest took 0 sec
+Testcase: lesserThanTest took 0 sec

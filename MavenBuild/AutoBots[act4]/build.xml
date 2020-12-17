@@ -1,0 +1,167 @@
+<!-- 
+ * 
+ * @author Molines, Emmanuel D.
+ * @author Garcia, Joshua D.
+ * @version 1.0
+ *
+-->
+
+	<project name="CodeCoverage" default="startCodeCoverage" basedir="."  xmlns:jacoco="antlib:org.jacoco.ant">
+
+	<!-- Set property names for different folder or file path-->
+	<property name="src.dir" value="src"/>
+	<property name="test.dir" value="src/test"/>
+	<property name="main.dir" value="src/main"/>
+	<property name="report.dir" value="build/coverageReport"/>	
+	<property name="build.dir" value="build"/>
+	<property name="result.report.dir" value="${report.dir}/html/jacoco"/>
+	<property name="result.exec.file" value="${report.dir}/jacoco.exec"/>
+	
+	
+	
+	<!-- Include jacocoant predefined taks to the apache ant script-->
+	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+        <classpath path="lib/jacocoant.jar"/>
+    </taskdef>
+	
+	
+	<!-- Set file path for the dependency files needed for the code coverage build -->
+	<path id="classpath">
+		<path location="lib">
+			<fileset dir="lib" includes="*.jar"/>
+		</path>
+		<path location="${build.dir}/classes"></path>
+	</path>
+	
+	
+	<!-- Condtion for the deleteion of build folder-->
+    <target name="setup">
+ 
+        <input message="Do you want to delete the build folder?[y/n]" addproperty="somethingProp"/>
+ 
+        <condition property="allIsWellBool">
+            <not>
+                <equals arg1="${somethingProp}" arg2="" trim="y"/>
+            </not>
+        </condition>
+    </target>
+	
+	<!-- Condtion for the deleteion of build folder-->
+    <target name="continue" depends="setup" unless="allIsWellBool">
+ 
+    </target>
+	
+	<!-- Clean or delete the build and bin folder-->
+    <target name="clean" depends="setup, continue" if="allIsWellBool">
+       	<delete includeEmptyDirs="true">
+        	  <fileset dir="build" erroronmissingdir="false"/>
+       	 	  <fileset dir="bin" erroronmissingdir="false"/>
+        </delete>
+    </target>
+ 
+
+
+	<!-- Create build folder folder -->
+	<target name="create">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${build.dir}\Folder1"/>
+		<mkdir dir="${build.dir}\Folder2"/>
+		<mkdir dir="${build.dir}\Folder3"/>
+	  	<mkdir dir="${result.report.dir}"/>
+	</target>
+
+	
+	<!-- Compile the project -->
+	<target name="compile" depends="clean, create">
+		<javac includeantruntime="false" srcdir="${src.dir}" destdir="${build.dir}/classes" debug="on" deprecation="off" encoding="cp1252" >
+			<include name="**/*.java" />
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	
+	<!-- Code coverage of java class using Jacoco toolkit -->
+	   <target name="test" depends="compile">
+		 
+	   		<!-- Exclude a list of class loader from execution analysis-->
+		   	<jacoco:coverage destfile="${result.exec.file}"
+		   		exclclassloader="sun.reflect.DelegatingClassLoader:javassist.Loader"  
+		   		xmlns:jacoco="antlib:org.jacoco.ant" >
+		   		
+		   	 <!-- for each matching file in the source directory,
+		   	 a test is run in a separate JVM. If a test fails,
+		   	  the build process is aborted. Results are collected 
+		   	  and written in specifiid file path of ${report.dir}.-->
+		    <junit printsummary="yes" haltonfailure="no" fork="true">
+		    	<classpath refid="classpath"/>
+		    	<formatter type="plain" />
+		    	<batchtest todir="${report.dir}" fork="yes" >
+		        	<fileset dir="${test.dir}">
+		         	<include name="**/*Test*.java" />
+		        	</fileset>
+		    	</batchtest>
+		    </junit>
+		   	</jacoco:coverage>
+	   </target>
+	
+	
+	<!-- Create coverage reports using Jacoco toolkit -->
+	 <target name="report" depends="test">
+		<jacoco:report>
+			<!-- Executiondata function - used to collect data from the jacoco executed file -->
+			<executiondata>
+				<file file="${result.exec.file}"/>
+			</executiondata>
+			
+			<!-- source file location pointer-->
+			<structure name="Code Coverage JUnit Report">
+				<classfiles>
+				<fileset dir="${build.dir}/classes"/>
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+				<fileset dir="${test.dir}"/>
+				</sourcefiles>
+			</structure>
+			
+			<!-- Produce html format code coverage report of jacoco  -->
+			<html destdir="${result.report.dir}"/>
+		</jacoco:report>
+	 
+	</target>
+	
+	<!--Copy compiled classes to be stored in different directory-->
+	<target name="copy" depends="report">
+	<copy file="src\main\Calculator.java" todir="build\Folder1"/>
+	<copy file="src\main\Calculator.java" todir="build\Folder2"/>
+	<copy file="src\main\Calculator.java" todir="build\Folder3"/>
+	<copy file="src\main\RelQuantifier.java" todir="build\Folder1"/>	
+	<copy file="src\main\RelQuantifier.java" todir="build\Folder2"/>
+	<copy file="src\main\RelQuantifier.java" todir="build\Folder3"/>	
+	</target>
+	
+	<!--Create Javadocs for the compiled classes-->
+	<target name="javadoc" depends="copy">
+		<javadoc destdir="build/javadocs">
+				<fileset dir="src/main"/>
+		</javadoc>
+	</target>
+	
+	<!--Create jar files for compiled classes-->
+	<target name="jar-classes" depends="javadoc">
+		<jar destfile="build/classes.jar"
+		     basedir="src"/>
+	</target>
+	
+	<!--Create jar files for javadocs-->
+	<target name="jar-docu" depends="jar-classes">
+		<jar destfile="build/documentaries.jar"
+		     basedir="build/javadocs"/>
+	</target>
+
+	
+	<!-- Task Build will start here-->
+	<target name="startCodeCoverage" depends="jar-docu"></target>
+	
+	
+
+</project>
